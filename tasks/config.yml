@@ -1,0 +1,17 @@
+---
+- name: Deploy HAProxy config
+  tags: haproxy
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/haproxy/{{ item }}"
+    owner: root
+    group: root
+    mode: "u=rw,g=r"
+  notify: restart haproxy
+  with_items:
+   - haproxy.cfg
+
+- name: Start HAproxy Service
+  tags: haproxy
+  service: name=haproxy state=started enabled=yes
+
