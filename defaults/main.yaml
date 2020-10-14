@@ -1,18 +1,17 @@
 haproxyACLs:
 haproxyAddHeaders: |
   http-response add-header Content-Security-Policy "default-src https:; script-src *"
-  http-response add-header Feature-Policy "battery 'none'; camera 'none'; display-capture 'none'; geolocation 'none'; microphone 'none'"
-  http-response add-header Referrer-Policy same-origin
-  http-response add-header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-  http-response add-header X-Content-Type-Options nosniff
-  http-response add-header X-Frame-Options DENY                     
-  http-response add-header X-XSS-Protection "1; mode=block"
+    http-response add-header Feature-Policy "battery 'none'; camera 'none'; display-capture 'none'; geolocation 'none'; microphone 'none'"
+    http-response add-header Referrer-Policy same-origin
+    http-response add-header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    http-response add-header X-Content-Type-Options nosniff
+    http-response add-header X-Frame-Options DENY                     
+    http-response add-header X-XSS-Protection "1; mode=block"
 haproxyBackends:
 haproxyUserLists: |
   userlist default
-
-  userlist stats-auth
-    group admin    users admin
-    user  admin    password $6$BroKenPassword
-    group readonly users haproxy
-    user  stats    password $6$ThisOneIsBrokenToo
+    userlist stats-auth
+      group admin    users admin
+      user  admin    password $6$BroKenPassword
+      group readonly users stats
+      user  stats    password $6$ThisOneIsBrokenToo

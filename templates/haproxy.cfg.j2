@@ -56,12 +56,11 @@ frontend https
 
   {{ haproxyACLs }}
 
-  reqadd X-Forwarded-Proto:\ https
-  reqadd X-Forwarded-Port:\ 443
+  http-request add-header X-Forwarded-Proto https
+  http-request add-header X-Forwarded-Port 443
   {{ haproxyAddHeaders }}
 
-
-backend stats_auth
+backend bstats
   stats enable
   acl AUTH       http_auth(stats-auth)
   acl AUTH_ADMIN http_auth_group(stats-auth) admin
