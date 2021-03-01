@@ -40,6 +40,17 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
+{% if haproxyDefaultUser %}
+  userlist default
+    user {{ haproxyDefaultUser }} password {{ haproxyDefaultUserPassword }}
+{% endif %}
+
+  userlist {{ webPrivilegedAccessGroup }}
+    group admin    users {% for user in localWebMgmtAdminsAttributes %}{{ user.login}},{% endfor %}
+
+{% for user in localWebMgmtAdminsAttributes %}
+    user {{ user.login }} password {{ [ webSecretLevel ] | map('extract', user ) | list | first | default('!$6$No$PasswordSetForThisSecretLevel', true) }}
+{% endfor %}
 {{ haproxyUserLists }}
 
 frontend http
@@ -60,11 +71,4 @@ frontend https
   http-request add-header X-Forwarded-Port 443
   {{ haproxyAddHeaders }}
 
-backend bstats
-  stats enable
-  acl AUTH       http_auth(stats-auth)
-  acl AUTH_ADMIN http_auth_group(stats-auth) admin
-  stats http-request auth unless AUTH
-  stats admin if AUTH_ADMIN
- 
 {{ haproxyBackends }}

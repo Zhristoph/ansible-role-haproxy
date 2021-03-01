@@ -1,4 +1,17 @@
 ---
+- name: Collect web mgmt admins
+  tags: haproxy
+  set_fact:
+    localWebMgmtAdmins: "{{ localWebMgmtAdmins | union(item.members) }}"
+  with_items:
+   - "{{ userRoles }}"
+  when: item.roleName == webPrivilegedAccessGroup
+
+- name: Local web mgmt admins attributes
+  tags: haproxy
+  set_fact:
+    localWebMgmtAdminsAttributes: "{{ localWebMgmtAdmins | map('extract', userAccounts ) | list }}"
+
 - name: Deploy HAProxy config
   tags: haproxy
   template:
