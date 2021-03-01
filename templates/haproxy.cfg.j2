@@ -20,7 +20,7 @@ global
 
 	ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
 
-	# curl https://ssl-config.mozilla.org/ffdhe2048.txt > /path/to/dhparam.pem
+	# curl https://ssl-config.mozilla.org/ffdhe4096.txt > /path/to/dhparam.pem
 	ssl-dh-param-file /etc/ssl/ffdhe4096.pem
         tune.ssl.default-dh-param 4096
 
