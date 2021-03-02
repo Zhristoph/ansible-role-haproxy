@@ -40,6 +40,7 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
+
 {% if haproxyDefaultUser %}
 userlist default
   user {{ haproxyDefaultUser }} password {{ haproxyDefaultUserPassword }}
@@ -53,6 +54,7 @@ userlist {{ webPrivilegedAccessGroup }}
 {% endfor %}
 
 {{ haproxyUserLists }}
+
 frontend http
   bind :80
   bind :::80
@@ -64,6 +66,7 @@ frontend https
   mode http
   option httpclose
   option forwardfor
+
 
   {{ haproxyACLs }}
   http-request add-header X-Forwarded-Proto https
