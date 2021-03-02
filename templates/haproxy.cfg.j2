@@ -41,18 +41,18 @@ defaults
 	errorfile 504 /etc/haproxy/errors/504.http
 
 {% if haproxyDefaultUser %}
-  userlist default
-    user {{ haproxyDefaultUser }} password {{ haproxyDefaultUserPassword }}
+userlist default
+  user {{ haproxyDefaultUser }} password {{ haproxyDefaultUserPassword }}
 {% endif %}
 
-  userlist {{ webPrivilegedAccessGroup }}
-    group admin    users {% for user in localWebMgmtAdminsAttributes %}{{ user.login}},{% endfor %}
+userlist {{ webPrivilegedAccessGroup }}
+  group admin    users {% for user in localWebMgmtAdminsAttributes %}{{ user.login}},{% endfor %}
 
 {% for user in localWebMgmtAdminsAttributes %}
-    user {{ user.login }} password {{ [ webSecretLevel ] | map('extract', user ) | list | first | default('!$6$No$PasswordSetForThisSecretLevel', true) }}
+  user {{ user.login }} password {{ [ webSecretLevel ] | map('extract', user ) | list | first | default('!$6$No$PasswordSetForThisSecretLevel', true) }}
 {% endfor %}
-{{ haproxyUserLists }}
 
+{{ haproxyUserLists }}
 frontend http
   bind :80
   bind :::80
@@ -66,7 +66,6 @@ frontend https
   option forwardfor
 
   {{ haproxyACLs }}
-
   http-request add-header X-Forwarded-Proto https
   http-request add-header X-Forwarded-Port 443
   {{ haproxyAddHeaders }}
