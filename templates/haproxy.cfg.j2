@@ -46,8 +46,10 @@ userlist default
   user {{ haproxyDefaultUser }} password {{ haproxyDefaultUserPassword }}
 {% endif %}
 
+{% if localWebMgmtAdminsAttributes %}
 userlist {{ webPrivilegedAccessGroup }}
   group admin    users {% for user in localWebMgmtAdminsAttributes %}{{ user.login}},{% endfor %}
+{% endif %}
 
 {% for user in localWebMgmtAdminsAttributes %}
   user {{ user.login }} password {{ [ webSecretLevel ] | map('extract', user ) | list | first | default('!$6$No$PasswordSetForThisSecretLevel', true) }}
