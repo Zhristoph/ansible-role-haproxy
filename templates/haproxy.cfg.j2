@@ -54,7 +54,6 @@ userlist {{ webPrivilegedAccessGroup }}
 {% endfor %}
 
 {{ haproxyUserLists }}
-
 frontend http
   bind :80
   bind :::80
@@ -67,10 +66,9 @@ frontend https
   option httpclose
   option forwardfor
 
-
-  {{ haproxyACLs }}
   http-request add-header X-Forwarded-Proto https
   http-request add-header X-Forwarded-Port 443
-  {{ haproxyAddHeaders }}
 
+  {{ haproxyACLs }}
+  {{ haproxyAddHeaders }}
 {{ haproxyBackends }}

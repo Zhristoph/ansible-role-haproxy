@@ -1,28 +1,35 @@
-haproxyACLs:
+haproxyACLs: |
+  acl stats.haproxy path_beg -i /stats
+  
+    use_backend bstats.haproxy if stats.haproxy
+    default_backend bstats.haproxy
+
 haproxyAddHeaders: |
   http-response add-header Content-Security-Policy "default-src https:; script-src *"
     http-response add-header Feature-Policy "battery 'none'; camera 'none'; display-capture 'none'; geolocation 'none'; microphone 'none'"
     http-response add-header Referrer-Policy same-origin
     http-response add-header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     http-response add-header X-Content-Type-Options nosniff
-    http-response add-header X-Frame-Options DENY                     
+    http-response add-header X-Frame-Options DENY
     http-response add-header X-XSS-Protection "1; mode=block"
 haproxyBackends: |
   backend bstats
-    stats enable
-    acl AUTH       http_auth(stats-auth)
-    acl AUTH_ADMIN http_auth_group(stats-auth) admin
-    stats http-request auth unless AUTH
-    stats admin if AUTH_ADMIN
+      stats uri /stats
+      stats enable
+      acl AUTH       http_auth(stats-auth)
+      acl AUTH_ADMIN http_auth_group(stats-auth) admin
+      stats http-request auth unless AUTH
+      stats admin if AUTH_ADMIN
 haproxyDefaultUser:
 haproxyDefaultUserPassword: $6$h0T/Uf/L968YKz$nyWcU1XnVZ.K4C.PGGQtYouShouldReallyChangeThisPasswordToUnbreakIt
 haproxyUserLists: |
   userlist default
-    userlist stats-auth
-      group admin    users admin
-      user  admin    password $6$BroKenPassword
-      group readonly users stats
-      user  stats    password $6$ThisOneIsBrokenToo
+    user nah    passwd $6$NotAPassword
+  userlist stats-auth
+    group admin    users admin
+    user  admin    password $6$BroKenPassword
+    group readonly users stats
+    user  stats    password $6$ThisOneIsBrokenToo
 localWebMgmtAdmins: []
 webSecretLevel: incredibleWebSecretLevel
 webPrivilegedAccessGroup: mySoPrivilegedAccessGroup
